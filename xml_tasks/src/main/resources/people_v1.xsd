@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+
+  <xs:simpleType name="GenderType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="male"/>
+      <xs:enumeration value="female"/>
+      <xs:enumeration value="unknown"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="NameType">
+    <xs:sequence>
+      <xs:element name="first" type="xs:string" minOccurs="0"/>
+      <xs:element name="last" type="xs:string" minOccurs="0"/>
+      <xs:element name="full" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="RefType">
+    <xs:attribute name="ref" type="xs:IDREF" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="SpousesType">
+    <xs:sequence>
+      <xs:element name="spouseRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="spouseName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ParentsType">
+    <xs:sequence>
+      <xs:element name="parentRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="parentName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ChildrenType">
+    <xs:sequence>
+      <xs:element name="sonRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="daughterRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="childRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="sonName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="daughterName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="childName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SiblingsType">
+    <xs:sequence>
+      <xs:element name="brotherRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="sisterRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="siblingRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="brotherName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="sisterName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="siblingName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ExpectedType">
+    <xs:attribute name="children" type="xs:nonNegativeInteger" use="optional"/>
+    <xs:attribute name="siblings" type="xs:nonNegativeInteger" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="PersonType">
+    <xs:sequence>
+      <xs:element name="name" type="NameType" minOccurs="0"/>
+      <xs:element name="gender" type="GenderType"/>
+      <xs:element name="spouses" type="SpousesType" minOccurs="0"/>
+      <xs:element name="parents" type="ParentsType" minOccurs="0"/>
+      <xs:element name="children" type="ChildrenType" minOccurs="0"/>
+      <xs:element name="siblings" type="SiblingsType" minOccurs="0"/>
+      <xs:element name="expected" type="ExpectedType" minOccurs="0"/>
+      <!-- Derived family info for convenience (computed during consolidation) -->
+      <xs:element name="family" type="FamilyType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="PeopleType">
+    <xs:sequence>
+      <xs:element name="person" type="PersonType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="count" type="xs:nonNegativeInteger" use="optional"/>
+  </xs:complexType>
+
+  <xs:element name="people" type="PeopleType"/>
+
+  <!-- Derived family structure -->
+  <xs:complexType name="FamilyType">
+    <xs:sequence>
+      <!-- parents by role -->
+      <xs:element name="fatherRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="fatherName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="motherRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="motherName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+      <!-- siblings by role -->
+      <xs:element name="brotherRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="brotherName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="sisterRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="sisterName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+      <!-- children by role -->
+      <xs:element name="sonRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="sonName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="daughterRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="daughterName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+      <!-- grandparents -->
+      <xs:element name="grandfatherRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="grandfatherName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="grandmotherRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="grandmotherName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+      <!-- parent's siblings -->
+      <xs:element name="uncleRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="uncleName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="auntRef" type="RefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="auntName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
